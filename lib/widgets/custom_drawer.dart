@@ -24,44 +24,68 @@ class custom_drawer extends StatelessWidget {
               color: Colors.blue,
             ),
           ),
-          ListTile(
-            title: Center(
-              child: Text(
-                'Invoice',
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(8)),
+              child: ListTile(
+                title: Center(
+                  child: Text(
+                    'Invoice',
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) {
+                    return FormScreen();
+                  }));
+                },
               ),
             ),
-            onTap: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) {
-                return FormScreen();
-              }));
-            },
           ),
-          ListTile(
-            title: Center(
-              child: Text(
-                'History',
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(8)),
+              child: ListTile(
+                title: Center(
+                  child: Text(
+                    'History',
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) {
+                    return HistoryScreen();
+                  }));
+                },
               ),
             ),
-            onTap: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) {
-                return HistoryScreen();
-              }));
-            },
           ),
-          ListTile(
-            title: Center(
-              child: Text(
-                'Log Out',
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(8)),
+              child: ListTile(
+                title: Center(
+                  child: Text(
+                    'Log Out',
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) {
+                    return SigningScreen();
+                  }));
+                },
               ),
             ),
-            onTap: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) {
-                return SigningScreen();
-              }));
-            },
           ),
         ],
       ),

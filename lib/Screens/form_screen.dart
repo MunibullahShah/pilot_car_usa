@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pilot_car_usa/schema/pdf_schema.dart';
+import 'PDF_view_screen.dart';
 import 'package:pilot_car_usa/schema/form_schema.dart';
 import 'package:pilot_car_usa/widgets/custom_drawer.dart';
 import 'package:pilot_car_usa/widgets/custom_text_field.dart';
@@ -46,14 +50,22 @@ class _FormScreenState extends State<FormScreen> {
   FocusNode escortDriverNode;
   FocusNode driverNode;
   FocusNode remarkNode;
+  FormSchema schema = FormSchema();
+  PDFSchema pdfSchema;
+
+  @override
+  void initState() {
+    schema.startDate =
+        "${curDate.day.toString()}/${curDate.month.toString()}/${curDate.year.toString()}";
+    schema.endDate =
+        "${curDate.day.toString()}/${curDate.month.toString()}/${curDate.year.toString()}";
+    schema.invoiceNo = "36-";
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    FormSchema schema = FormSchema();
-    schema.startDate =
-        "${curDate.day.toString()}/${curDate.month.toString()}/${curDate.year.toString()}";
-    schema.invoiceNo =
-        "36${curDate.day.toString()}${curDate.month.toString()}${curDate.year.toString()}";
     return Scaffold(
       appBar: AppBar(
         title: Text("Form"),
@@ -67,7 +79,16 @@ class _FormScreenState extends State<FormScreen> {
             child: RaisedButton(
               color: Colors.blue,
               child: Text('Save'),
-              onPressed: () {},
+              onPressed: () async {
+                pdfSchema = PDFSchema(schema);
+                File file = await pdfSchema.generatePdf();
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return PFDView(
+                    file: file,
+                    invoice: schema.invoiceNo,
+                  );
+                }));
+              },
             ),
           ),
         ],
@@ -83,12 +104,12 @@ class _FormScreenState extends State<FormScreen> {
                 <Widget>[
                   Container(
                     child: CustomTextField(
-                      onChanged: (value) {
-                        schema.invoiceNo = value;
-                      },
                       keyboardType: TextInputType.datetime,
                       focusNode: startDateNode,
                       onFieldSubmitted: (value) {
+                        schema.invoiceNo == "36-"
+                            ? schema.invoiceNo = "${schema.invoiceNo}$value"
+                            : schema.invoiceNo = schema.invoiceNo;
                         CustomTextField.fieldFocusChange(
                           context,
                           startDateNode,
@@ -104,44 +125,80 @@ class _FormScreenState extends State<FormScreen> {
                     height: 8,
                   ),
                   Container(
-                    child: CustomTextField(
-                      onChanged: (value) {
-                        schema.startDate = value;
-                      },
-                      keyboardType: TextInputType.datetime,
-                      focusNode: startDateNode,
-                      onFieldSubmitted: (value) {
-                        CustomTextField.fieldFocusChange(
-                          context,
-                          startDateNode,
-                          endDateNode,
-                        );
-                      },
-                      label: 'Start Date',
-                      hintText: '${schema.startDate}',
-                      textInputAction: TextInputAction.next,
+                    child: Column(
+                      children: [
+                        Text(
+                          "Start Date",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        GestureDetector(
+                          child: Center(
+                            child: Text(
+                              schema.startDate,
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2010),
+                                    lastDate: DateTime(2025))
+                                .then((date) {
+                              setState(() {
+                                schema.startDate = date.day.toString() +
+                                    "/" +
+                                    date.month.toString() +
+                                    "/" +
+                                    date.year.toString();
+                              });
+                            });
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
                     height: 8,
                   ),
                   Container(
-                    child: CustomTextField(
-                      onChanged: (value) {
-                        schema.endDate = value;
-                      },
-                      keyboardType: TextInputType.datetime,
-                      focusNode: endDateNode,
-                      onFieldSubmitted: (value) {
-                        CustomTextField.fieldFocusChange(
-                          context,
-                          endDateNode,
-                          toNode,
-                        );
-                      },
-                      label: 'End Date',
-                      hintText: '',
-                      textInputAction: TextInputAction.next,
+                    child: Column(
+                      children: [
+                        Text(
+                          "End Date",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        GestureDetector(
+                          child: Center(
+                            child: Text(
+                              schema.endDate,
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2010),
+                                    lastDate: DateTime(2025))
+                                .then((date) {
+                              setState(() {
+                                schema.endDate = date.day.toString() +
+                                    "/" +
+                                    date.month.toString() +
+                                    "/" +
+                                    date.year.toString();
+                              });
+                            });
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
@@ -323,6 +380,8 @@ class _FormScreenState extends State<FormScreen> {
                     },
                     onChanged2: (value) {
                       schema.hightPoleY = int.parse(value);
+                      schema.highPoleResult =
+                          schema.highPoleX * schema.hightPoleY;
                     },
                     onFieldSubmitted: (value) {
                       schema.highPoleResult =
@@ -382,8 +441,10 @@ class _FormScreenState extends State<FormScreen> {
                       schema.dayRateY = int.parse(value);
                     },
                     onFieldSubmitted: (value) {
-                      schema.dayRateResult = schema.dayRateX * schema.dayRateY;
-                      setState(() {});
+                      setState(() {
+                        schema.dayRateResult =
+                            schema.dayRateX * schema.dayRateY;
+                      });
                     },
                     result: schema.dayRateResult,
                     textInputAction: TextInputAction.next,
@@ -400,8 +461,9 @@ class _FormScreenState extends State<FormScreen> {
                       schema.noGoY = int.parse(value);
                     },
                     onFieldSubmitted: (value) {
-                      schema.noGoResult = schema.noGoX * schema.noGoY;
-                      setState(() {});
+                      setState(() {
+                        schema.noGoResult = schema.noGoX * schema.noGoY;
+                      });
                     },
                     result: schema.noGoResult,
                     textInputAction: TextInputAction.next,
@@ -418,9 +480,10 @@ class _FormScreenState extends State<FormScreen> {
                       schema.detentionY = int.parse(value);
                     },
                     onFieldSubmitted: (value) {
-                      schema.detentionResult =
-                          schema.detentionX * schema.detentionY;
-                      setState(() {});
+                      setState(() {
+                        schema.detentionResult =
+                            schema.detentionX * schema.detentionY;
+                      });
                     },
                     result: schema.detentionResult,
                     textInputAction: TextInputAction.next,
