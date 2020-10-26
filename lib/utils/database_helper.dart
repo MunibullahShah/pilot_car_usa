@@ -44,6 +44,19 @@ class DatabaseHelper {
     return result;
   }
 
+  Future<List<String>> getSearchedpdf(String value) async {
+    Database db = await this.database;
+    List<Map<String, dynamic>> list =
+        await db.rawQuery("Select * from PDF WHERE invoice LIKE ?", [value]);
+
+    List<String> searchedPDFlist = List<String>();
+    list.forEach((element) {
+      String str = element["invoice"];
+      searchedPDFlist.add(str);
+    });
+    return searchedPDFlist;
+  }
+
   Future<int> insertPDF(String invoice) async {
     Database db = await this.database;
     var map = Map<String, String>();

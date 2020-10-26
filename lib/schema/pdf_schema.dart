@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
-import 'package:pilot_car_usa/file_utils.dart';
+import 'file:///F:/Fiverr%20Orders/pilot_car_usa/lib/utils/file_utils.dart';
 import 'package:pilot_car_usa/schema/form_schema.dart';
 
 class PDFSchema {
@@ -40,7 +40,7 @@ class PDFSchema {
                         Container(
                           alignment: Alignment.topRight,
                           child: Text(
-                            "ATTN: _________",
+                            "ATTN: ___________",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -149,7 +149,7 @@ class PDFSchema {
                       ),
                     ),
                     Text(
-                      "Driver Phone: " +
+                      "Driver's Phone: " +
                           (schema.phoneNumber == null
                               ? "___________"
                               : "__" + schema.phoneNumber + "__"),
@@ -420,6 +420,20 @@ class PDFSchema {
                 ),
                 Text(
                   "Signature: " + "________________________",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "MAKE CHECKS PAYABLE TO:                                 ",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "WE PAY QUICKLY\n15627 WEST MCNICHOLS, DETROIT, MICHIGAN 48235\nEMAIL: WEPAYQUICK@GMAIL.COM",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

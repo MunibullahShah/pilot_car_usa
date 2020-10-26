@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pilot_car_usa/utils/theme.dart';
 
 class input_column_widget extends StatefulWidget {
   final String title;
@@ -29,73 +31,86 @@ class _input_column_widgetState extends State<input_column_widget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Center(
-          child: Text(
-            widget.title,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Container(
+      decoration: BoxDecoration(
+        color: CustomTheme.LIGHT_COLOR,
+        border: Border.all(color: CustomTheme.PRIMARY_LIGHT_COLOR),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
           children: [
-            Container(
-              child: TextFormField(
-                textInputAction: widget.textInputAction,
-                onFieldSubmitted: widget.onFieldSubmitted,
-                autofocus: true,
-                onChanged: widget.onChanged1,
-                focusNode: focusNode1,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              width: 65,
-              height: 35,
+                Text(
+                  widget.result == null ? "" : widget.result.toString(),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              ],
             ),
-            Center(
-              child: Text(
-                "@ ",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            SizedBox(
+              height: 8,
             ),
-            Container(
-              child: TextFormField(
-                onFieldSubmitted: widget.onFieldSubmitted,
-                textInputAction: widget.textInputAction,
-                focusNode: focusNode2,
-                onChanged: widget.onChanged2,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  child: TextFormField(
+                    textAlign: TextAlign.center,
+                    textInputAction: widget.textInputAction,
+                    onFieldSubmitted: widget.onFieldSubmitted,
+                    autofocus: true,
+                    onChanged: widget.onChanged1,
+                    focusNode: focusNode1,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  width: 100,
+                  height: 35,
                 ),
-              ),
-              width: 65,
-              height: 35,
-            ),
-            Center(
-              child: Text(
-                widget.result == null ? "" : widget.result.toString(),
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                Center(
+                  child: Text(
+                    "@ ",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
+                Container(
+                  child: TextFormField(
+                    textAlign: TextAlign.center,
+                    onFieldSubmitted: widget.onFieldSubmitted,
+                    textInputAction: widget.textInputAction,
+                    focusNode: focusNode2,
+                    onChanged: widget.onChanged2,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  width: 100,
+                  height: 35,
+                ),
+              ],
             ),
           ],
         ),
-      ],
+      ),
     );
   }
 }

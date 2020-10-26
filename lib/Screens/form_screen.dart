@@ -10,6 +10,10 @@ import 'package:pilot_car_usa/widgets/custom_text_field.dart';
 import 'package:pilot_car_usa/widgets/input_column_widget.dart';
 
 class FormScreen extends StatefulWidget {
+  String invoice = "";
+  FormScreen();
+  FormScreen.edit({Key key, this.invoice}) : super(key: key);
+
   @override
   _FormScreenState createState() => _FormScreenState();
 }
@@ -50,16 +54,19 @@ class _FormScreenState extends State<FormScreen> {
   FocusNode escortDriverNode;
   FocusNode driverNode;
   FocusNode remarkNode;
-  FormSchema schema = FormSchema();
+  FormSchema schema;
   PDFSchema pdfSchema;
 
   @override
   void initState() {
+    schema = FormSchema();
     schema.startDate =
-        "${curDate.day.toString()}/${curDate.month.toString()}/${curDate.year.toString()}";
+        "${curDate.month.toString()}/${curDate.day.toString()}/${curDate.year.toString()}";
     schema.endDate =
-        "${curDate.day.toString()}/${curDate.month.toString()}/${curDate.year.toString()}";
-    schema.invoiceNo = "36-";
+        "${curDate.month.toString()}/${curDate.day.toString()}/${curDate.year.toString()}";
+    widget.invoice == ""
+        ? schema.invoiceNo = "36-"
+        : schema.invoiceNo = widget.invoice;
     // TODO: implement initState
     super.initState();
   }
@@ -103,23 +110,33 @@ class _FormScreenState extends State<FormScreen> {
               delegate: SliverChildListDelegate(
                 <Widget>[
                   Container(
-                    child: CustomTextField(
-                      keyboardType: TextInputType.datetime,
-                      focusNode: startDateNode,
-                      onFieldSubmitted: (value) {
-                        schema.invoiceNo == "36-"
-                            ? schema.invoiceNo = "${schema.invoiceNo}$value"
-                            : schema.invoiceNo = schema.invoiceNo;
-                        CustomTextField.fieldFocusChange(
-                          context,
-                          startDateNode,
-                          endDateNode,
-                        );
-                      },
-                      label: 'Invoice No.',
-                      hintText: '${schema.invoiceNo}',
-                      textInputAction: TextInputAction.next,
-                    ),
+                    child: widget.invoice == ""
+                        ? CustomTextField(
+                            keyboardType: TextInputType.datetime,
+                            focusNode: startDateNode,
+                            onFieldSubmitted: (value) {
+                              schema.invoiceNo == "36-"
+                                  ? schema.invoiceNo =
+                                      "${schema.invoiceNo}$value"
+                                  : schema.invoiceNo = schema.invoiceNo;
+                              CustomTextField.fieldFocusChange(
+                                context,
+                                startDateNode,
+                                endDateNode,
+                              );
+                            },
+                            label: 'Invoice No.',
+                            hintText: '${schema.invoiceNo}',
+                            textInputAction: TextInputAction.next,
+                          )
+                        : Text(
+                            "Edit form by entering all the details again\n(Except Invoice Number)",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 18,
+                            ),
+                          ),
                   ),
                   SizedBox(
                     height: 8,
@@ -299,7 +316,7 @@ class _FormScreenState extends State<FormScreen> {
                       onChanged: (value) {
                         schema.phoneNumber = value;
                       },
-                      label: 'Dirver\'s Phone',
+                      label: 'Driver\'s Phone',
                       focusNode: phoneNode,
                       hintText: '',
                       textInputAction: TextInputAction.next,

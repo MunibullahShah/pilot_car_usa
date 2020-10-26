@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SigningScreen(),
+      home: FormScreen(),
       //home: SigningScreen(title: 'Pilot Car USA'),
     );
   }

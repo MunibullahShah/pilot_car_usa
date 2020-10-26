@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:pilot_car_usa/database_helper.dart';
-import 'package:pilot_car_usa/file_utils.dart';
+import 'file:///F:/Fiverr%20Orders/pilot_car_usa/lib/utils/database_helper.dart';
+import 'file:///F:/Fiverr%20Orders/pilot_car_usa/lib/utils/file_utils.dart';
 import 'package:pilot_car_usa/widgets/custom_drawer.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,18 +16,48 @@ class HistoryScreen extends StatefulWidget {
 class _HistoryScreenState extends State<HistoryScreen> {
   DatabaseHelper db = DatabaseHelper();
   List<String> filesList;
+
+  @override
+  void initState() {
+    if (filesList == null) {
+      filesList = List<String>();
+      updateCustomerList("");
+    }
+  }
+
   int count;
   @override
   Widget build(BuildContext context) {
-    if (filesList == null) {
-      filesList = List<String>();
-      updateCustomerList();
-    }
     DatabaseHelper db = DatabaseHelper();
     return Scaffold(
       drawer: custom_drawer(),
       appBar: AppBar(
-        title: Text("History"),
+        title: Padding(
+          padding: const EdgeInsets.fromLTRB(37, 10, 0, 5),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
+            height: 30,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(8)),
+            alignment: Alignment.center,
+            width: 200,
+            child: TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  updateCustomerList(value);
+                });
+              },
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                hintText: "Search",
+                alignLabelWithHint: true,
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ),
       ),
       body: CustomScrollView(
         slivers: <Widget>[
@@ -40,6 +70,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
                       return PFDView(
+                        edit: true,
                         file: file,
                         invoice: filesList[index],
                       );
@@ -53,11 +84,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                  border: new Border.all(
+                                color: Colors.white,
+                                boxShadow: [
+                                  new BoxShadow(
                                     color: Colors.grey,
-                                    width: 5.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(6)),
+                                    offset: new Offset(5.0, 0.0),
+                                    blurRadius: 10.0,
+                                  )
+                                ],
+                                border: new Border.all(
+                                  color: Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
                               child: ListTile(
                                 title: Text(filesList[index]),
                               ),
@@ -80,10 +119,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 
-  void updateCustomerList() {
+  void updateCustomerList(String search) {
+    Future<List<String>> pdfListFuture;
     final Future<Database> dbFuture = db.initializeDatabase();
     dbFuture.then((database) {
-      Future<List<String>> pdfListFuture = db.getPDF();
+      if (search == "") {
+        pdfListFuture = db.getPDF();
+      } else {
+        search = "%" + search + "%";
+        pdfListFuture = db.getSearchedpdf(search);
+      }
       pdfListFuture.then((pdfList) {
         setState(() {
           this.filesList = pdfList;

@@ -4,15 +4,21 @@ import 'package:flutter/foundation.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf_flutter/pdf_flutter.dart';
 import 'package:pilot_car_usa/Screens/form_screen.dart';
-import 'package:pilot_car_usa/database_helper.dart';
+import 'file:///F:/Fiverr%20Orders/pilot_car_usa/lib/utils/database_helper.dart';
 import 'package:printing/printing.dart';
 import 'package:share/share.dart';
 
 class PFDView extends StatefulWidget {
   final File file;
   final String invoice;
+  bool edit = false;
 
-  const PFDView({Key key, this.file, this.invoice}) : super(key: key);
+  PFDView({
+    Key key,
+    this.file,
+    this.invoice,
+    this.edit,
+  }) : super(key: key);
 
   @override
   _PFDViewState createState() => _PFDViewState();
@@ -27,6 +33,21 @@ class _PFDViewState extends State<PFDView> {
           appBar: AppBar(
             leading: null,
             actions: [
+              widget.edit == true
+                  ? IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return FormScreen.edit(
+                            invoice: widget.invoice,
+                          );
+                        }));
+                      },
+                    )
+                  : SizedBox(
+                      width: 5,
+                    ),
               IconButton(
                   icon: Icon(Icons.share),
                   onPressed: () {
