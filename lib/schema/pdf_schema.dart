@@ -13,7 +13,7 @@ class PDFSchema {
   PDFSchema(this.schema);
 
   Future<File> generatePdf() async {
-    var _logo = PdfImage.file(
+    PdfImage _logo = PdfImage.file(
       doc.document,
       bytes: (await rootBundle.load('assets/logo.png')).buffer.asUint8List(),
     );
@@ -417,6 +417,9 @@ class PDFSchema {
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
+                ),
+                SizedBox(
+                  height: 6,
                 ),
                 Text(
                   "Signature: " + "________________________",

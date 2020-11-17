@@ -19,7 +19,7 @@ class FormScreen extends StatefulWidget {
 }
 
 class _FormScreenState extends State<FormScreen> {
-  var curDate = DateTime.now();
+  DateTime curDate = DateTime.now();
 
   FocusNode startDateNode;
   FocusNode endDateNode;
